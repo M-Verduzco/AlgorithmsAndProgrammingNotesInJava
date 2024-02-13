@@ -1,61 +1,93 @@
-package Librerias;
+package Ejecutables;
 
-
-import Librerias.ManejadorArreglos1;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+
 public class ManejadorMatrices2 {
 	
-public static String zigZag(int[][] mat, int r, int c) {
-		StringBuilder cad=new StringBuilder();
-		for(int i=0;i<r;i++)
-			for(int j=0;j<c;j++)
-				if(i%2==0)
-				cad.append(mat[i][j]);
-				else {
-					invierteRenglonI(mat[i][j],i);
-					cad.append(mat[i][j]);
-				}
-		return cad.toString();		
-	}
-
-	private static void invierteRenglonI(int i, int i2) {
-	// TODO Auto-generated method stub
+	//*************INTERCAMBIO AUXILIAR*************//
+	public static void intercambioMat(int posX, int posY, int [][]a, int r) {
+		int aux;
+		aux = a[r][posX];
+		a[r][posX]=a[r][posY];
+		a[r][posY]=aux;
+	}			
 	
-}
-
-	public static void leeMatriz(int[][]mat, int r, int c) {
-		Scanner lec;
-		lec=new Scanner(System.in);
-		for(int i=0;i<r;i++) 
-			for(int j=0;j<c;j++) {
-				System.out.println("Dame el dato del renglon"+i+ "Dame el dato de la columna"+j);
-				mat[i][j]=lec.nextInt();
+	//*************INVIERTE EL UN RENGLON SOBRE SI MISMO*************//
+	public static void invierteRenglonMismo(int [][]a, int r, int c) {
+		for(int i =0; i<c/2; i++)
+			intercambioMat(i, c-1-i, a, r);
+	}
+	
+	//***********ZIG ZAG *************//
+		public static String zigZag(int[][] mat, int r, int c) {
+		StringBuilder cad = new StringBuilder();
+		
+		for(int i=0;i<r;i++) {
+			if(i%2!=0)
+				invierteRenglonMismo(mat,i, c);	
+		}
+		
+		for(int j=0; j<r; j++) {
+			cad.append("- ");
+			for( int k = 0 ; k<c; k++) {
+				cad.append(mat[j][k]);
+				cad.append(" ");
 			}
+		}
+		return cad.toString();
 	}
 
-	public static void main(String[] args) {
+	//**********IMPRIMIR MATRIZ**********//
+			public static void imprimeMatriz(int [][]mat, int nr, int nc) {
+				for(int i=0; i<nr; i++)
+					for(int j=0; j<nc; j++) {
+						System.out.println("(" + i + ", " + j + "): " + mat[i][j]);
+					}
+			}
+	
+	//**********LECTOR DE ARCHIVOS A MATRIZ***********//
+			public static int [] leeArchivoMatriz(int a[][]) {
+				int nr=0; //el número de renglones que va a contener la matriz
+				int nc=0; //el número de columnas que va a contener la matriz
+				Scanner archivo;
+				int res [] = new int [2];
+				try {
+					archivo = new Scanner (new File("zigzag.txt"));
+					nr=archivo.nextInt(); //renglones
+					nc=archivo.nextInt(); //columnas
+					for(int i=0;i<nr;i++)
+						for(int j=0;j<nc;j++)
+						a[i][j]=archivo.nextInt();
+				}catch(FileNotFoundException fnfe) {
+					System.out.println(fnfe);
+					System.exit(-1);
+				}
+				res [0] = nr;
+				res [1] = nc;
+				return res;
+
+			}
+
+		public static void main(String[] args) {
+		//main
+		int mat[][] = new int [4][5];
+		String resul;
+		leeArchivoMatriz(mat);
+		System.out.println("Matriz Original");
+		imprimeMatriz(mat, 4, 5);
+		System.out.println("\n");
+		System.out.println("Ejecuto el Zig Zag");
+		resul = zigZag(mat, 4, 5);
+		System.out.println(resul);
 		
-		int mat[][];
-		Scanner archivo;
-		int n;
-		mat= new int[4][4];
+		int array [] = new int [6];
+		int array2 [] = {1 ,2 ,3, 4, 5};
+		array[1] = 34;
+		System.out.println(array[2]);
 		
-		leeMatriz(mat,4,4);	
-		System.out.println("ZigZag"+zigZag(mat, 4, 4));
-		try {
-			archivo = new Scanner(new File("zigZag.txt"));
-			n=archivo.nextInt();
-			for(int i=0;i<n;i++) 
-				for(int j=0;j<4;j++) 
-					for(int k=0;k<4;k++)
-						mat[j][k]=archivo.nextInt();	
-		}catch(FileNotFoundException fnfe) {
-			System.out.println(fnfe);
-			System.exit(-1);
-		}
-		System.out.println("ZigZag"+zigZag(mat, 4, 4));
+		
 	}
 }
